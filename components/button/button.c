@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <freertos/FreeRTOS.h>
-#include <esp_log.h>
+// #include <esp_log.h>
 #include <driver/gpio.h>
 #include "button.h"
 

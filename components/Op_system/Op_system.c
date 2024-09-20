@@ -4,7 +4,7 @@
 #include "freertos/task.h"
 // #include "esp_timer.h"
 // #include "driver/gptimer.h"   // ESP32 timer library
-#include "esp_log.h"
+// #include "esp_log.h"
 #include "Op_system.h"
 #include "lcd_display.h"
 #include "valve_control.h"

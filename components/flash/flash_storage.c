@@ -1,7 +1,7 @@
 #include "flash_storage.h"
 #include "nvs_flash.h"
 #include "nvs.h"
-#include "esp_log.h"
+// #include "esp_log.h"
 
 //static const char *TAG = "FlashStorage";
 static const char *NAMESPACE = "storage";
@@ -25,7 +25,7 @@ esp_err_t flash_save_pressCount(uint16_t pressCount) {
 
     ret = nvs_set_u16(handle, "pressCount", pressCount);
     if (ret == ESP_OK) {
-        ret = nvs_commit(handle);
+        ret = nvs_commit(handle); 
         //ESP_LOGI(TAG, "Saved pressCount = %d", pressCount);
     }
     nvs_close(handle);
