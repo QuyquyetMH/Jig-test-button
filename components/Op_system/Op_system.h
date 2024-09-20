@@ -6,6 +6,7 @@
 // Enum for system states
 typedef enum {
     SYSTEM_PAUSE = 0,
+    SYSTEM_SETUP,
     RUNNING_PITON,
     CHECK_BUTTON_PRESS,
     CHECK_BUTTON_RELEASE,

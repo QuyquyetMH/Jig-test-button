@@ -67,6 +67,9 @@ void lcd_display_state(system_state_t state) {
         case SYSTEM_PAUSE:
             LCD_writeStr("PAUSE");
             break;
+        case SYSTEM_SETUP:
+            LCD_writeStr("SYSTEM SETUP");
+            break;
         case  RUNNING_PITON:
             LCD_writeStr("RUN PISTON");
             break;

@@ -112,9 +112,10 @@ void StateManager() {
 
         case STATE_EVENT_IDLE:
             buttonState = get_button_state();
+            lcd_display_state(SYSTEM_SETUP);
             while (buttonState == BUTTON_NONE) {
                 buttonState = get_button_state();
-                vTaskDelay(100 / portTICK_PERIOD_MS);
+                vTaskDelay(100/ portTICK_PERIOD_MS);
             }
             switch (buttonState) {
                 case BUTTON_PAUSE:
