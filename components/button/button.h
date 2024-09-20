@@ -19,7 +19,4 @@ void button_pause_init(button_callback_t callback);
 // Hàm đọc trạng thái của nút nhấn
 
 
-// Đặt hàm callback để xử lý ngắt
-
-
 #endif // BUTTON_H
