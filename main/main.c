@@ -56,7 +56,7 @@
 #define LCD_COLS 20
 #define LCD_ROWS 4
 
-#define TIMEOUT_MS 1000  // 1 second timeout in milliseconds
+#define TIMEOUT_MS 750  // 1 second timeout in milliseconds
 
 TickType_t start_tick;
 TickType_t timeout_ticks = pdMS_TO_TICKS(TIMEOUT_MS);
@@ -173,7 +173,7 @@ void OperationSystem(void) {
             lcd_display_state(state);
             valve_pullup();
             if (control_valve_state == VALVE_ON) {
-                vTaskDelay(500 / portTICK_PERIOD_MS);
+            //  vTaskDelay(500 / portTICK_PERIOD_MS);
                 state = CHECK_BUTTON_PRESS;
             }
             break;
@@ -187,6 +187,7 @@ void OperationSystem(void) {
                     count_error_1 = 0;
                     pressCount++;
                     lcd_display_countPress(pressCount);
+                    vTaskDelay(300 / portTICK_PERIOD_MS);
                     state = CLOSE_PITON;
                     return;
                 }
@@ -199,7 +200,7 @@ void OperationSystem(void) {
             lcd_display_state(state);
             valve_pulldown();
             if (control_valve_state == VALVE_OFF) {
-                vTaskDelay(500 / portTICK_PERIOD_MS);
+               // vTaskDelay(500 / portTICK_PERIOD_MS);
                 state = CHECK_BUTTON_RELEASE;
             }
             break;
@@ -230,6 +231,7 @@ void OperationSystem(void) {
                 lcd_display_state(state);
                 eventCurrentState = STATE_EVENT_ERROR;
             } else {
+                valve_pulldown();
                 state = RUNNING_PITON;
             }
             break;
@@ -240,6 +242,7 @@ void OperationSystem(void) {
                 lcd_display_state(state);
                 eventCurrentState = STATE_EVENT_ERROR;
             } else {
+                valve_pullup();
                 state = CLOSE_PITON;
             }
             break;
