@@ -187,7 +187,7 @@ void OperationSystem(void) {
                     count_error_1 = 0;
                     pressCount++;
                     lcd_display_countPress(pressCount);
-                    vTaskDelay(300 / portTICK_PERIOD_MS);
+                    vTaskDelay(700 / portTICK_PERIOD_MS);
                     state = CLOSE_PITON;
                     return;
                 }
