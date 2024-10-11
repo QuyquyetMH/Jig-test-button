@@ -31,13 +31,13 @@ void valve_control_init(void) {
 
 // Function to turn the valve ON
 void valve_pullup(void) {
-    gpio_set_level(MOSFET_PIN, 1);  // Drive MOSFET
+    gpio_set_level(MOSFET_PIN, 0);  // Drive MOSFET
     control_valve_state = VALVE_ON;
 }
 
 // Function to turn the valve OFF
 void valve_pulldown(void){
-    gpio_set_level(MOSFET_PIN, 0);
+    gpio_set_level(MOSFET_PIN, 1);
     control_valve_state = VALVE_OFF;
 }
 

@@ -18,14 +18,16 @@
 static char lcd_buffer[20]; 
 
 void lcd_display_setup(void){
-     LCD_setCursor(0, 2);
-     LCD_writeStr("JIG TEST BUTTON");
-     LCD_setCursor(1, 0);
-     LCD_writeStr("Count: ");
      LCD_setCursor(2, 0);
+     LCD_writeStr("JIG TEST BUTTON");
+     LCD_setCursor(0, 1);
+     LCD_writeStr("Count: ");
+     LCD_setCursor(0, 2);
      LCD_writeStr("Setup: ");
-     LCD_setCursor(3, 0);
-     LCD_writeStr("SETUP SYSTEM");
+     LCD_setCursor(0, 3);
+     LCD_writeStr("ER1:");
+     LCD_setCursor(10,3);
+     LCD_writeStr("ER2:");
 }
 
 // Display the countPress value on the LCD
@@ -34,7 +36,7 @@ void lcd_display_countPress(uint16_t countPress) {
     //snprintf(lcd_buffer, sizeof(lcd_buffer), "Count: %ld", countPress);
     snprintf(lcd_buffer, sizeof(lcd_buffer),"%u", countPress);
     // Set cursor to line 1 (row 0, col 0)
-    LCD_setCursor( 1, 8);
+    LCD_setCursor( 8, 1);
 
     // Display the formatted string
     LCD_writeStr(lcd_buffer);
@@ -47,53 +49,76 @@ void lcd_display_setupPress(uint16_t setupPress) {
     snprintf(lcd_buffer, sizeof(lcd_buffer),"%u",setupPress);
 
     // Set cursor to line 2 (row 1, col 0)
-    LCD_setCursor (2, 8);
+    LCD_setCursor (8, 2);
 
     // Display the formatted string
     LCD_writeStr(lcd_buffer);
 }
 
-// Display the current system state on the LCD
-void lcd_display_state(system_state_t state) {
-    // Clear the second line (row 1)
-    LCD_setCursor(3, 0);
-    LCD_writeStr("                    ");  // Clear 20 characters
+void lcd_display_error1(uint16_t count_error_1) {
+    // Format the string to display
+    //snprintf(lcd_buffer, sizeof(lcd_buffer), "Setup: %ld", setupPress);
+    snprintf(lcd_buffer, sizeof(lcd_buffer),"%u",count_error_1);
 
     // Set cursor to line 2 (row 1, col 0)
-    LCD_setCursor(3, 0);
+    LCD_setCursor (4, 3);
 
-    // Display the appropriate state message
-    switch (state) {
-        case SYSTEM_PAUSE:
-            LCD_writeStr("PAUSE");
-            break;
-        case SYSTEM_SETUP:
-            LCD_writeStr("SYSTEM SETUP");
-            break;
-        case  RUNNING_PITON:
-            LCD_writeStr("RUN PISTON");
-            break;
-        case CHECK_BUTTON_PRESS:
-            LCD_writeStr("PRESS BUTTON");
-            break;
-        case CHECK_BUTTON_RELEASE:
-            LCD_writeStr("RELEASE BUTTON");
-            break;
-        case CLOSE_PITON:
-            LCD_writeStr("CLOSE PISTON");
-            break;
-        case SYSTEM_ERROR_1:
-            LCD_writeStr("ERROR 1");
-            break;
-        case SYSTEM_ERROR_2:
-            LCD_writeStr("ERROR 2");
-            break;
-        default:
-            break;
-    }
+    // Display the formatted string
+    LCD_writeStr(lcd_buffer);
 }
 
-void button_check_init(gpio_num_t button_check_num){
+void lcd_display_error2(uint16_t count_error_2) {
+    // Format the string to display
+    //snprintf(lcd_buffer, sizeof(lcd_buffer), "Setup: %ld", setupPress);
+    snprintf(lcd_buffer, sizeof(lcd_buffer),"%u",count_error_2);
+
+    // Set cursor to line 2 (row 1, col 0)
+    LCD_setCursor (14, 3);
+
+    // Display the formatted string
+    LCD_writeStr(lcd_buffer);
+}
+// // Display the current system state on the LCD
+// void lcd_display_state(system_state_t state) {
+//     // Clear the second line (row 1)
+//     LCD_setCursor(0, 3);
+//     LCD_writeStr("                    ");  // Clear 20 characters
+
+//     // Set cursor to line 2 (row 1, col 0)
+//     LCD_setCursor(0, 3);
+
+//     // Display the appropriate state message
+//     switch (state) {
+//         case SYSTEM_PAUSE:
+//             LCD_writeStr("PAUSE");
+//             break;
+//         case SYSTEM_SETUP:
+//             LCD_writeStr("SYSTEM SETUP");
+//             break;
+//         case  RUNNING_PITON:
+//             LCD_writeStr("RUN PISTON");
+//             break;
+//         case CHECK_BUTTON_PRESS:
+//             LCD_writeStr("PRESS BUTTON");
+//             break;
+//         case CHECK_BUTTON_RELEASE:
+//             LCD_writeStr("RELEASE BUTTON");
+//             break;
+//         case CLOSE_PITON:
+//             LCD_writeStr("CLOSE PISTON");
+//             break;
+//         case SYSTEM_ERROR_1:
+//             LCD_writeStr("ERROR 1");
+//             break;
+//         case SYSTEM_ERROR_2:
+//             LCD_writeStr("ERROR 2");
+//             break;
+//         default:
+//             break;
+//     }
+// }
+
+void sensor_check_init(gpio_num_t sensor_check_num){
     gpio_config_t button_conf;
 
     button_conf.intr_type = GPIO_INTR_DISABLE;
@@ -101,16 +126,26 @@ void button_check_init(gpio_num_t button_check_num){
     button_conf.pull_up_en = GPIO_PULLUP_ENABLE;
     button_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
 
-    button_conf.pin_bit_mask = (1ULL << button_check_num);
+    button_conf.pin_bit_mask = (1ULL << sensor_check_num);
    
     gpio_config(&button_conf);
 }
 
-bool get_check_button_level(gpio_num_t button_check_num)
+bool get_check_sensor_level(gpio_num_t sensor_check_num)
 {
-    return (bool)gpio_get_level(button_check_num);
+    return (bool)gpio_get_level(sensor_check_num);
 }
    
+void buzzer_init(gpio_num_t buzzer_num){
+        gpio_config_t io_conf = {};
+    io_conf.intr_type = GPIO_INTR_DISABLE;       // Tắt ngắt (interrupt)
+    io_conf.mode = GPIO_MODE_OUTPUT;             // Cấu hình chân GPIO làm output
+    io_conf.pin_bit_mask = (1ULL << buzzer_num); // Chọn chân BUZZER_PIN
+    io_conf.pull_down_en = 0;                    // Không dùng pull-down
+    io_conf.pull_up_en = 0;                      // Không dùng pull-up
+    gpio_config(&io_conf);                       // Áp dụng cấu hình
+}
+
 
 // void IRAM_ATTR timer_callback(void* arg) {
 
