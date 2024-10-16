@@ -62,7 +62,7 @@
 
 TickType_t start_tick;
 TickType_t timeout_ticks = pdMS_TO_TICKS(TIMEOUT_MS);
-
+static const char *TAG = "ButtonTest";
 
 uint16_t count_error_1, count_error_2;
 uint16_t pressCount ;
@@ -110,8 +110,8 @@ void StateManager() {
         case STATE_EVENT_STARTUP:
             pressCount = flash_load_pressCount(&pressCount);
             setupCount = flash_load_setupCount(&setupCount);
-            count_error_1 = flash_save_error1(&count_error_1);
-            count_error_2 = flash_save_error2(&count_error_2);
+            count_error_1 = flash_load_error1(&count_error_1);
+            count_error_2 = flash_load_error2(&count_error_2);
             lcd_display_setup();
             lcd_display_setupPress(setupCount);
             lcd_display_countPress(pressCount);
@@ -206,7 +206,7 @@ void OperationSystem(void) {
                 if (check_sensor_state == 0) {
                     pressCount += 1;
                     lcd_display_countPress(pressCount);
-                    vTaskDelay(10000 / portTICK_PERIOD_MS);
+                    vTaskDelay(15000 / portTICK_PERIOD_MS);
                     state = CLOSE_BUTTON;
                     return;
                 }
@@ -230,7 +230,7 @@ void OperationSystem(void) {
             while (xTaskGetTickCount() - start_tick < timeout_ticks) {
                 check_sensor_state = get_check_sensor_level(SENSOR_CHECK_PIN);
                 if (check_sensor_state == 1 ) {
-                    vTaskDelay(10000 / portTICK_PERIOD_MS);
+                    vTaskDelay(15000 / portTICK_PERIOD_MS);
                     state = OPEN_BUTTON;
                     return;
                 }
@@ -255,31 +255,41 @@ void OperationSystem(void) {
             count_error_2++;
                 //lcd_display_state(state);
             lcd_display_error2(count_error_2);
-                //eventCurrentState = STATE_EVENT_ERROR;
+                eventCurrentState = STATE_EVENT_ERROR;
                 valve_pulldown();
                 state = OPEN_BUTTON;
             break;
 
         default:
-            break;
+            break; 
     }
 }
 
 static void appInit(void) {
     button_init();
+     ESP_LOGI(TAG, "Button init");
     sensor_check_init(SENSOR_CHECK_PIN);
+     ESP_LOGI(TAG, "sensor check init");
     button_pause_init(pause_button_pressed);
+     ESP_LOGI(TAG, "button_pause_init");
     valve_control_init();
+      ESP_LOGI(TAG, "valve_control_init");
     buzzer_init(BUZZER_PIN);
+       ESP_LOGI(TAG, "buzzer init");
     LCD_init(LCD_ADDR, SDA_PIN, SCL_PIN, LCD_COLS, LCD_ROWS);
+     ESP_LOGI(TAG, "LCD init");
     flash_storage_init();
+     ESP_LOGI(TAG, "flash init");
     
 }
 
 void app_main(void) {
     valve_pulldown();
+    ESP_LOGI(TAG, "App init");
     appInit();
     while (true) {
+      ESP_LOGI(TAG, "Run system");
+      //  vTaskDelay(2000 / portTICK_PERIOD_MS);
         StateManager();
     }
 }
